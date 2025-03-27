@@ -62,6 +62,12 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  // @override
+  // void didUpdateWidget(covariant RidePrefForm oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   _updateFields(widget.initialPreference);
+  // }
+
   // ----------------------------------
   // Handle events
   // ----------------------------------
