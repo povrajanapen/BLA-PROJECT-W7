@@ -39,4 +39,20 @@ class Location {
   String toString() {
     return name;
   }
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      name: json['name'] as String,
+      country: Country.values.firstWhere(
+        (element) => element.name == json['country'] as String,
+      ),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'country': country.name,
+    };
+  }
 }
+
