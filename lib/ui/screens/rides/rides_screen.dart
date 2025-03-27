@@ -44,7 +44,7 @@ class RidesScreen extends StatelessWidget {
 
     if (newPreference != null) {
       // 1 - Update the current preference
-      context.read<RidesPreferencesProvider>().setCurrentPreference(newPreference);
+      onRidePrefSelected(newPreference, context);
   }
   }
   void onFilterPressed() {}
@@ -60,7 +60,7 @@ class RidesScreen extends StatelessWidget {
         child: Consumer<RidesPreferencesProvider>(
           builder: (context, ridePrefsProvider, child) {
             // - Get the matching rides
-            RidePreference currentPreference = ridePrefsProvider.preferencesHistory[0];
+            RidePreference currentPreference = ridePrefsProvider.currentPreference!;
             List<Ride> matchingRides = RidesService.instance.getRidesFor(
               currentPreference,
               currentFilter,

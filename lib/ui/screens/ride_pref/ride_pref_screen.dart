@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week_3_blabla_project/provider/ride_prefs_provider.dart';
+import 'package:week_3_blabla_project/ui/widgets/errors/bla_error_screen.dart';
 import '../../../model/ride/ride_pref.dart';
 import '../../theme/theme.dart';
 import '../../../utils/animations_util.dart';
@@ -18,9 +19,12 @@ const String blablaHomeImagePath = 'assets/images/blabla_home.png';
 class RidePrefScreen extends StatelessWidget {
   const RidePrefScreen({super.key});
 
-  Future<void> _onRidePrefSelected(RidePreference newPreference, BuildContext context) async {
+  Future<void> _onRidePrefSelected(
+      RidePreference newPreference, BuildContext context) async {
     // 1 - Update the current preference
-    context.read<RidesPreferencesProvider>().setCurrentPreference(newPreference);
+    context
+        .read<RidesPreferencesProvider>()
+        .setCurrentPreference(newPreference);
 
     // 2 - Navigate to the rides screen (with a buttom to top animation)
     await Navigator.of(context)
@@ -31,10 +35,19 @@ class RidePrefScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RidesPreferencesProvider>(
       builder: (context, ridePrefsProvider, child) {
+        final preferencesHistory = ridePrefsProvider.preferencesHistory;
+
+
+        if (preferencesHistory.isLoading) {
+          return const BlaError(message: 'loading');
+        } else if (preferencesHistory.isError) {
+          return const BlaError(message: 'No connection. Try later');
+        } else if (preferencesHistory.isSuccess &&
+            preferencesHistory.data != null) {
+          // If the state is success, display the screen as normal
         RidePreference? currentRidePreference =
             ridePrefsProvider.currentPreference;
-        List<RidePreference> pastPreferences =
-            ridePrefsProvider.preferencesHistory;
+        List<RidePreference> pastPreferences = preferencesHistory.data!;
 
         return Stack(
           children: [
@@ -76,8 +89,8 @@ class RidePrefScreen extends StatelessWidget {
                           itemCount: pastPreferences.length,
                           itemBuilder: (ctx, index) => RidePrefHistoryTile(
                             ridePref: pastPreferences[index],
-                            onPressed: () =>
-                                _onRidePrefSelected(pastPreferences[index], context),
+                            onPressed: () => _onRidePrefSelected(
+                                pastPreferences[index], context),
                           ),
                         ),
                       ),
@@ -88,6 +101,10 @@ class RidePrefScreen extends StatelessWidget {
             ),
           ],
         );
+      }else {
+
+          return const BlaError(message: 'No preferences available');
+        }
       },
     );
   }
